@@ -284,7 +284,7 @@ class Ui_FAS(object):
         self.label_25.setText(_translate("FAS", "Teacher Name", None))
         self.add_class_btn.setText(_translate("FAS", "Add Class", None))
         self.label_23.setText(_translate("FAS", "Status ", None))
-        self.add_class_status.setText(_translate("FAS", "Class Added !", None))
+        self.add_class_status.setText(_translate("FAS", "....", None))
         self.tab_4.setTabText(self.tab_4.indexOf(self.add_class_tab), _translate("FAS", "Add Class", None))
         self.groupBox.setTitle(_translate("FAS", "Student Details", None))
         self.reg_std_upload_btn.setText(_translate("FAS", "Upload Image", None))

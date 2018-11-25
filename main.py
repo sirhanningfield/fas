@@ -7,6 +7,7 @@ import mysql.connector
 
 
 from login import Ui_login
+from admin import Ui_FAS
 
 mydb = mysql.connector.connect(
 	  host="localhost",
@@ -17,7 +18,8 @@ mydb = mysql.connector.connect(
 cursor = mydb.cursor(named_tuple=True)
 
 
-class Main(QWidget, Ui_login):
+
+class Main(QWidget, Ui_login, Ui_FAS):
 
     def __init__(self, parent = None):
         super(Main,self).__init__(parent)
@@ -28,22 +30,51 @@ class Main(QWidget, Ui_login):
         self.message = ""
         self.login_ui.login_btn.clicked.connect(lambda: self.login())
 
+    def openAminWindow(self):
+    	# self.admin_window = Admin(self)
+    	self.window = QTabWidget()
+    	self.admin_ui = Ui_FAS()
+    	self.admin_ui.setupUi(self.window)
+    	self.window.show()
+    	self.admin_ui.add_class_btn.clicked.connect(lambda: self.addClass())
+    	self.admin_ui.reg_std_btn.clicked.connect(lambda: self.addStudent())
+    	pass
+
+    def addStudent(self):
+    	print "Adding student"
+    	pass
+
+    def addClass(self):
+    	print "Add class method"
+
+    	# check if both fields are filled 
+
+    	# check if any previous results are available 
+
+    	# if not add the class 
+
+    	# change status label to class added !
+
+    	# clear both text fields
+    	pass
+
+
     def checkAdmin(self,result):
     	if result == None:
     		self.showErrorMessage("Invalid Username or Password")
-    		return
+    		return False
     		pass
     	else:
     		print "login success!"
-    		self.showErrorMessage("Logged in successfully as : '"+result.username+"'")
-    		exit() # remove this line 
+    		self.close()
+    		self.openAminWindow()
+    		return True
     	pass
     	
 
     def findAdmin(self,username,password):
     	
     	self.cursor.execute("SELECT username FROM admin WHERE username = '"+ username+"' AND password = '"+password+"'")
-    	 # +"' AND password = '"+password+"'")
     	result = self.cursor.fetchone()
     	return result
     	
@@ -80,19 +111,27 @@ class Main(QWidget, Ui_login):
     		pass
  
     	# hex the password
-
     	password = self.hexPassword(password)
 
-
     	# query database for result of this username and password
-
     	result = self.findAdmin(username,password)
     	
-
     	# if no result throw error
     	self.checkAdmin(result)
 
-    	# if result, then display message
+    	return True
+
+# class Admin(Main):
+# 	"""docstring for Admin"""
+# 	def __init__(self, parent = None):
+# 		super(Admin, self).__init__(parent)
+# 		print "admin class"
+# 		self.parent = parent
+# 		# self.window = QTabWidget()
+#   #   	self.admin_ui = Ui_FAS()
+#   #   	self.admin_ui.setupUi(self.window)
+#   #   	self.window.show()
+						 	
    	
 def main():
 	
