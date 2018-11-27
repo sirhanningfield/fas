@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="holder">
+    <file>img/logo.PNG</file>
     <file>img/holder_1.PNG</file>
   </qresource>
 </RCC>

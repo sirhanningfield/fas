@@ -14,8 +14,8 @@
    <string>Fingerprint Attendance - Admin Login</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>../../../favicon.png</normaloff>../../../favicon.png</iconset>
+   <iconset resource="../resource.qrc">
+    <normaloff>:/holder/img/logo.PNG</normaloff>:/holder/img/logo.PNG</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -121,6 +121,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resource.qrc"/>
+ </resources>
  <connections/>
 </ui>
