@@ -1,13 +1,21 @@
-import sys
+import sys, os
 import time
 import hashlib
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import mysql.connector
+import ntpath
+import shutil
 
 
 from login import Ui_login
 from admin import Ui_admin
+
+try:
+    _fromUtf8 = QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
 
 mydb = mysql.connector.connect(
 	  host="localhost",
@@ -27,10 +35,10 @@ class Main(QWidget, Ui_login, Ui_admin):
         self.cursor = cursor
         self.login_ui = Ui_login()
         self.login_ui.setupUi(self)
-        self.message = ""
+        self.hasImage = False
         self.login_ui.login_btn.clicked.connect(lambda: self.login())
 
-    def openAminWindow(self):
+    def openAdminWindow(self):
     	# self.admin_window = Admin(self)
     	self.window = QTabWidget()
     	self.admin_ui = Ui_admin()
@@ -38,8 +46,39 @@ class Main(QWidget, Ui_login, Ui_admin):
     	self.window.show()
     	self.admin_ui.add_class_btn.clicked.connect(lambda: self.addClass())
     	self.admin_ui.reg_std_btn.clicked.connect(lambda: self.addStudent())
+    	self.admin_ui.reg_std_upload_btn.clicked.connect(lambda: self.chooseFile())
     	pass
 
+    def copyToProject(self,fileName):
+    	path, fileExtension = os.path.splitext(str(fileName))
+    	timestamp = str(time.time())
+    	currentDirectory = os.getcwd() 
+    	print currentDirectory
+    	targetPath = currentDirectory+"/assets/project_img/"
+    	targetFileName = targetPath+timestamp+fileExtension
+    	if not os.path.exists(targetPath):
+    		os.mkdir(targetPath) 
+    		pass
+    	shutil.copy(fileName,targetFileName)
+    	return targetFileName
+
+    def chooseFile(self):
+    	print "Select picture .."
+    	
+    	# show file selector
+    	fileName = QFileDialog.getOpenFileName(self, "Select File","C://","Images (*.png *.xpm *.jpg)")
+
+    	# save file in assets folder
+    	fileName = self.copyToProject(fileName)
+
+    	pixmap = QPixmap(fileName)
+    	pixmap = pixmap.scaled(300,300)
+    	if pixmap:
+    		self.admin_ui.register_student_pic.setPixmap(pixmap)
+    		self.hasImage = True
+    		pass
+    	
+    	
     def addStudent(self,):
     	print "Adding student"
     	pass
@@ -103,7 +142,7 @@ class Main(QWidget, Ui_login, Ui_admin):
     	else:
     		print "login success!"
     		self.close()
-    		self.openAminWindow()
+    		self.openAdminWindow()
     		return True
     	pass
     	

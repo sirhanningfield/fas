@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '.\designs\FAS_login.ui'
 #
-# Created: Sat Nov 24 16:17:48 2018
+# Created: Thu Nov 29 20:36:48 2018
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,7 +28,7 @@ class Ui_login(object):
         login.setObjectName(_fromUtf8("login"))
         login.resize(450, 292)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../../../favicon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/holder/img/logo.PNG")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         login.setWindowIcon(icon)
         self.gridLayout = QtGui.QGridLayout(login)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
@@ -84,6 +84,7 @@ class Ui_login(object):
         self.label_2.setText(_translate("login", "Password", None))
         self.login_btn.setText(_translate("login", "Login", None))
 
+import resource_rc
 
 if __name__ == "__main__":
     import sys
