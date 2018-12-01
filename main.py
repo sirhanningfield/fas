@@ -37,6 +37,19 @@ class Main(QWidget, Ui_login, Ui_admin):
         self.login_ui.setupUi(self)
         self.hasImage = False
         self.login_ui.login_btn.clicked.connect(lambda: self.login())
+        self.classes = self.getAllClasses()
+
+    def getAllClasses(self):
+    	print "Get all classes ..."
+    	query = "SELECT * FROM classes"
+    	cursor.execute(query)
+    	result = cursor.fetchall()
+    	classes = []
+
+    	for row in result:
+    		classes.append(row.class_code)
+
+    	return classes
 
     def openAdminWindow(self):
     	# self.admin_window = Admin(self)
@@ -47,6 +60,7 @@ class Main(QWidget, Ui_login, Ui_admin):
     	self.admin_ui.add_class_btn.clicked.connect(lambda: self.addClass())
     	self.admin_ui.reg_std_btn.clicked.connect(lambda: self.addStudent())
     	self.admin_ui.reg_std_upload_btn.clicked.connect(lambda: self.chooseFile())
+    	self.admin_ui.reg_std_class.addItems(self.classes)
     	pass
 
     def copyToProject(self,fileName):
@@ -81,6 +95,7 @@ class Main(QWidget, Ui_login, Ui_admin):
     	
     def addStudent(self,):
     	print "Adding student"
+    	print self.classes
     	pass
 
     def findClass(self,class_id, class_code):
