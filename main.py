@@ -6,6 +6,7 @@ from PyQt4.QtCore import *
 import mysql.connector
 import ntpath
 import shutil
+import datetime
 
 
 from login import Ui_login
@@ -21,7 +22,7 @@ mydb = mysql.connector.connect(
 	  host="localhost",
 	  user="root",
 	  passwd="",
-	  database="fas_test"
+	  database="fas"
 	)
 cursor = mydb.cursor(named_tuple=True)
 
@@ -35,7 +36,7 @@ class Main(QWidget, Ui_login, Ui_admin):
         self.cursor = cursor
         self.login_ui = Ui_login()
         self.login_ui.setupUi(self)
-        self.hasImage = False
+        self.stdRegImg = ""
         self.login_ui.login_btn.clicked.connect(lambda: self.login())
         self.classes = self.getAllClasses()
 
@@ -60,14 +61,13 @@ class Main(QWidget, Ui_login, Ui_admin):
     	self.admin_ui.add_class_btn.clicked.connect(lambda: self.addClass())
     	self.admin_ui.reg_std_btn.clicked.connect(lambda: self.addStudent())
     	self.admin_ui.reg_std_upload_btn.clicked.connect(lambda: self.chooseFile())
-    	self.admin_ui.reg_std_class.addItems(self.classes)
+    	self.admin_ui.reg_std_class_list.addItems(self.classes)
     	pass
 
     def copyToProject(self,fileName):
     	path, fileExtension = os.path.splitext(str(fileName))
     	timestamp = str(time.time())
-    	currentDirectory = os.getcwd() 
-    	print currentDirectory
+    	currentDirectory = os.getcwd()
     	targetPath = currentDirectory+"/assets/project_img/"
     	targetFileName = targetPath+timestamp+fileExtension
     	if not os.path.exists(targetPath):
@@ -89,17 +89,92 @@ class Main(QWidget, Ui_login, Ui_admin):
     	pixmap = pixmap.scaled(300,300)
     	if pixmap:
     		self.admin_ui.register_student_pic.setPixmap(pixmap)
-    		self.hasImage = True
+    		self.stdRegImg = fileName
+    		# self.admin_ui.reg_std_upload_btn.setEnabled(False)
     		pass
+
+    def formatDate(self, date):
+    	return datetime.datetime.strptime(date, "%d/%m/%Y").date()
     	
-    	
-    def addStudent(self,):
-    	print "Adding student"
-    	print self.classes
+    def selectedClasses(self,selectedClasses):
+    	classes = []
+        for i in range(len(selectedClasses)):
+            classes.append(str(selectedClasses[i].text()))
+    	return classes
+
+    def addNewStudent(self,studentId, name, dob, guardian,address, imagePath):
+
+    	# add student to database
+    	sql = "INSERT INTO students (student_id, name, dob, guardian, address, image_path, fingerprint_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    	val = (studentId, name, dob,guardian,address,imagePath,'') # change '' to a value later
+    	cursor.execute(sql, val)
+    	mydb.commit()
+    	return True
+    
+    def addNewStudentClass(self,studentId, classes):
+    	for i in range(len(classes)):
+    		print classes[i]
+    		sql = "INSERT INTO student_classes (student_id, class_code) VALUES (%s, %s)"
+    		val = (studentId, classes[i]) # change false to a value later
+	    	cursor.execute(sql, val)
+	    	mydb.commit()
+    		pass
+    	return True
     	pass
 
-    def findClass(self,class_id, class_code):
-    	query = "SELECT * FROM classes WHERE class_id = '"+class_id+"' OR class_code = '"+class_code+"'"
+    def clearList(self):
+    	for i in range(self.admin_ui.reg_std_class_list.count()):
+	        item = self.admin_ui.reg_std_class_list.item(i)
+	        self.admin_ui.reg_std_class_list.setItemSelected(item, False)
+    	pass
+
+    def addStudent(self,):
+    	print "Adding student ..."
+    	studentId = str(self.admin_ui.reg_std_id.text())
+    	name = str(self.admin_ui.reg_std_name.text())
+    	dob = self.formatDate(str(self.admin_ui.reg_std_dob.text()))
+    	guardian = str(self.admin_ui.reg_std_guardian.text())
+    	address = str(self.admin_ui.reg_std_address.toPlainText())
+    	classes = self.admin_ui.reg_std_class_list.selectedItems()
+    	classes = self.selectedClasses(classes)
+    	imagePath = self.stdRegImg
+    	credentials = [studentId, name, dob, guardian, address, imagePath, classes]
+
+
+    	if self.validateCredentials(credentials,"Please enter all fields") == False :
+    		return 
+    		pass
+
+    	# check if student with the same ID exists.
+    	result = self.checkIfExists("students","student_id", studentId)
+
+    	if result:
+    		self.showErrorMessage("Student already exists")
+    		return
+    	 	pass
+
+    	# If student doesnt already exist, then create a new one and link to classes
+    	addStudent = self.addNewStudent(studentId, name, dob, guardian,address, imagePath)
+    	addStudentClass = self.addNewStudentClass(studentId, classes)
+    	
+    	if addStudent and addStudentClass:
+    		# change status label to class added !
+    		self.showErrorMessage("Student added !")
+    		# self.admin_ui.reg_std_upload_btn.setEnabled(True)
+    		self.admin_ui.reg_std_id.setText("")
+    		self.admin_ui.reg_std_name.setText("")
+    		
+    		self.admin_ui.reg_std_guardian.setText("")
+    		self.admin_ui.reg_std_address.setText("")
+    		self.stdRegImg = ""
+    		self.admin_ui.register_student_pic.setPixmap(QPixmap(_fromUtf8(":/holder/img/holder_1.PNG")))
+    		self.clearList()
+    		# self.admin_ui.reg_std_dob.clear()
+
+    	pass
+
+    def checkIfExists(self, table,column, value):
+    	query = "SELECT * FROM "+table+" WHERE "+column+" = '"+value+"'"
     	cursor.execute(query)
     	result = cursor.fetchone()
     	return result
@@ -126,7 +201,7 @@ class Main(QWidget, Ui_login, Ui_admin):
     		pass
 
     	# check if any previous results are available
-    	result = self.findClass(class_id, class_code)
+    	result = self.checkIfExists("classes","class_code", class_code)
 
     	# if not add the class
     	if result:
@@ -140,6 +215,7 @@ class Main(QWidget, Ui_login, Ui_admin):
     			self.admin_ui.add_class_code.setText("")
     			self.admin_ui.add_class_id.setText("")
     			self.admin_ui.add_class_teacher.setText("")
+    			self.admin_ui.reg_std_class_list.addItem(class_code)
     			pass
     		else:
     			self.showErrorMessage("Class could not be added")
@@ -164,8 +240,9 @@ class Main(QWidget, Ui_login, Ui_admin):
 
     def findAdmin(self,username,password):
     	
-    	self.cursor.execute("SELECT username FROM admin WHERE username = '"+ username+"' AND password = '"+password+"'")
-    	result = self.cursor.fetchone()
+    	query = "SELECT username FROM admin WHERE username = '"+ username+"' AND password = '"+password+"'"
+    	cursor.execute(query)
+    	result = cursor.fetchone()
     	return result
     	
 
@@ -196,6 +273,7 @@ class Main(QWidget, Ui_login, Ui_admin):
     	username = str(self.login_ui.username.text())
     	password = str(self.login_ui.password.text())
     	credentials = [username,password]
+
 
     	# check if username and password are not null
     	if self.validateCredentials(credentials,"Please enter username and password") == False :

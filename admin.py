@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '.\designs\FAS.ui'
 #
-# Created: Thu Nov 29 20:35:05 2018
+# Created: Sun Dec 02 23:17:32 2018
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_admin(object):
     def setupUi(self, admin):
         admin.setObjectName(_fromUtf8("admin"))
-        admin.resize(1102, 811)
+        admin.resize(1005, 811)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/holder/img/logo.PNG")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         admin.setWindowIcon(icon)
@@ -159,23 +159,24 @@ class Ui_admin(object):
         self.reg_std_guardian = QtGui.QLineEdit(self.groupBox)
         self.reg_std_guardian.setObjectName(_fromUtf8("reg_std_guardian"))
         self.formLayout_6.setWidget(4, QtGui.QFormLayout.FieldRole, self.reg_std_guardian)
-        self.label_8 = QtGui.QLabel(self.groupBox)
-        self.label_8.setObjectName(_fromUtf8("label_8"))
-        self.formLayout_6.setWidget(5, QtGui.QFormLayout.LabelRole, self.label_8)
-        self.reg_std_class = QtGui.QComboBox(self.groupBox)
-        self.reg_std_class.setObjectName(_fromUtf8("reg_std_class"))
-        self.formLayout_6.setWidget(5, QtGui.QFormLayout.FieldRole, self.reg_std_class)
         self.label_5 = QtGui.QLabel(self.groupBox)
         self.label_5.setObjectName(_fromUtf8("label_5"))
-        self.formLayout_6.setWidget(6, QtGui.QFormLayout.LabelRole, self.label_5)
+        self.formLayout_6.setWidget(5, QtGui.QFormLayout.LabelRole, self.label_5)
         self.reg_std_address = QtGui.QTextEdit(self.groupBox)
         self.reg_std_address.setObjectName(_fromUtf8("reg_std_address"))
-        self.formLayout_6.setWidget(6, QtGui.QFormLayout.FieldRole, self.reg_std_address)
+        self.formLayout_6.setWidget(5, QtGui.QFormLayout.FieldRole, self.reg_std_address)
+        self.label_11 = QtGui.QLabel(self.groupBox)
+        self.label_11.setObjectName(_fromUtf8("label_11"))
+        self.formLayout_6.setWidget(6, QtGui.QFormLayout.LabelRole, self.label_11)
+        self.reg_std_class_list = QtGui.QListWidget(self.groupBox)
+        self.reg_std_class_list.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
+        self.reg_std_class_list.setObjectName(_fromUtf8("reg_std_class_list"))
+        self.formLayout_6.setWidget(6, QtGui.QFormLayout.FieldRole, self.reg_std_class_list)
+        spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.formLayout_6.setItem(7, QtGui.QFormLayout.FieldRole, spacerItem6)
         self.reg_std_btn = QtGui.QPushButton(self.groupBox)
         self.reg_std_btn.setObjectName(_fromUtf8("reg_std_btn"))
         self.formLayout_6.setWidget(8, QtGui.QFormLayout.FieldRole, self.reg_std_btn)
-        spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.formLayout_6.setItem(7, QtGui.QFormLayout.FieldRole, spacerItem6)
         self.gridLayout_4.addLayout(self.formLayout_6, 1, 5, 1, 1)
         spacerItem7 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.gridLayout_4.addItem(spacerItem7, 4, 3, 1, 1)
@@ -312,8 +313,8 @@ class Ui_admin(object):
         self.label_3.setText(_translate("admin", "Name", None))
         self.label_14.setText(_translate("admin", "DOB", None))
         self.label_4.setText(_translate("admin", "Guardian ", None))
-        self.label_8.setText(_translate("admin", "Class", None))
         self.label_5.setText(_translate("admin", "Address", None))
+        self.label_11.setText(_translate("admin", "Classes", None))
         self.reg_std_btn.setText(_translate("admin", "Register", None))
         self.tab_4.setTabText(self.tab_4.indexOf(self.register_tab), _translate("admin", "Register", None))
         self.groupBox_4.setTitle(_translate("admin", "GroupBox", None))
