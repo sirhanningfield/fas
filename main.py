@@ -38,6 +38,7 @@ class Main(QWidget, Ui_login, Ui_admin):
         self.login_ui.setupUi(self)
         self.stdRegImg = ""
         self.login_ui.login_btn.clicked.connect(lambda: self.login())
+        self.login_ui.password.returnPressed.connect(lambda: self.login())
         self.classes = self.getAllClasses()
 
     def getAllClasses(self):
@@ -62,8 +63,75 @@ class Main(QWidget, Ui_login, Ui_admin):
     	self.admin_ui.reg_std_btn.clicked.connect(lambda: self.addStudent())
     	self.admin_ui.reg_std_upload_btn.clicked.connect(lambda: self.chooseFile())
     	self.admin_ui.reg_std_class_list.addItems(self.classes)
+    	self.admin_ui.add_class_list.addItems(self.classes)
+    	self.admin_ui.res_class.addItems(self.classes)
+    	self.getClassStudents()
+    	self.admin_ui.res_class.currentIndexChanged.connect(lambda: self.getClassStudents())
+    	self.admin_ui.res_display_btn.clicked.connect(lambda: self.getAttendence())
+    	self.resetTableView()
+    	self.admin_ui.res_reset_btn.clicked.connect(lambda: self.resetTableView())
     	pass
 
+    def resetTableView(self):
+
+    	self.admin_ui.res_table_view.setRowCount(1)
+    	self.admin_ui.res_table_view.setColumnCount(4)
+    	self.admin_ui.res_table_view.setItem(0,0, QTableWidgetItem("Student ID"))
+    	self.admin_ui.res_table_view.setItem(0,1, QTableWidgetItem("Student Name"))
+    	self.admin_ui.res_table_view.setItem(0,2, QTableWidgetItem("Class Code"))
+    	self.admin_ui.res_table_view.setItem(0,3, QTableWidgetItem("Date"))
+    	self.admin_ui.res_display_btn.setEnabled(True);
+    	self.admin_ui.result_count.setText("0");
+
+    	pass
+
+    def getAttendence(self):
+
+    	self.admin_ui.res_display_btn.setEnabled(False);
+    	# check all fields are filled, get attendence
+    	class_code = str(self.admin_ui.res_class.currentText())
+    	student_id = str(self.admin_ui.res_std_id.currentText().split(" ")[0])
+    	date_from = str(self.formatDate(str(self.admin_ui.res_date_from.text())))
+    	date_to = str(self.formatDate(str(self.admin_ui.res_date_to.text())))
+    	credentials = [class_code,student_id,date_from,date_to]
+    	if self.validateCredentials(credentials,"Please enter all fields") == False :
+    		return 
+    		pass
+
+    	#  Query and find all records of the attendence of the student from and to date
+    	query = "SELECT a.student_id, s.name,a.class_code, a.date FROM attendance a LEFT JOIN students s ON s.student_id = a.student_id WHERE a.class_code = '"+class_code+"' AND a.student_id='"+student_id+"' AND a.date >='"+date_from+"' AND date <='"+date_to+"'"
+
+    	cursor.execute(query)
+    	result = cursor.fetchall()
+    	print result
+    	# fill in the table
+    	for row_number, row_data in enumerate(result):
+    		row_number += 1
+    		self.admin_ui.res_table_view.insertRow(row_number)
+    		for column_number, data in enumerate(row_data):
+    			self.admin_ui.res_table_view.setItem(row_number,column_number,QTableWidgetItem(str(data)))
+    			pass
+    		pass
+    	
+    	self.admin_ui.result_count.setText(str(len(result)));
+    	pass
+
+    def getClassStudents(self):
+    	self.admin_ui.res_std_id.clear() 
+    	class_code = str(self.admin_ui.res_class.currentText())
+    	# get all the students that are registered in this class
+    	query = "SELECT sc.student_id, s.name FROM student_classes sc LEFT JOIN students s on s.student_id = sc.student_id WHERE sc.class_code='"+class_code+"'"
+
+    	
+    	cursor.execute(query)
+    	result = cursor.fetchall()
+    	students = []
+
+    	for row in result:
+    		students.append(row.student_id+" - "+row.name)
+
+    	self.admin_ui.res_std_id.addItems(students)
+    	pass
     def copyToProject(self,fileName):
     	path, fileExtension = os.path.splitext(str(fileName))
     	timestamp = str(time.time())
@@ -216,6 +284,7 @@ class Main(QWidget, Ui_login, Ui_admin):
     			self.admin_ui.add_class_id.setText("")
     			self.admin_ui.add_class_teacher.setText("")
     			self.admin_ui.reg_std_class_list.addItem(class_code)
+    			self.admin_ui.add_class_list.addItem(class_code)
     			pass
     		else:
     			self.showErrorMessage("Class could not be added")

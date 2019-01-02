@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\designs\FAS_attendance.ui'
+# Form implementation generated from reading ui file '.\FAS_attendance.ui'
 #
-# Created: Thu Nov 29 20:35:55 2018
+# Created: Tue Jan 01 19:42:15 2019
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -105,9 +105,9 @@ class Ui_attendance(object):
         self.label_9 = QtGui.QLabel(self.groupBox)
         self.label_9.setObjectName(_fromUtf8("label_9"))
         self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.label_9)
-        self.scan_date = QtGui.QLineEdit(self.groupBox)
-        self.scan_date.setObjectName(_fromUtf8("scan_date"))
-        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.scan_date)
+        self.dateEdit = QtGui.QDateEdit(self.groupBox)
+        self.dateEdit.setObjectName(_fromUtf8("dateEdit"))
+        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.dateEdit)
         self.verticalLayout_4.addWidget(self.groupBox)
         self.verticalLayout.addLayout(self.verticalLayout_4)
         self.groupBox_3 = QtGui.QGroupBox(self.tab)
@@ -117,12 +117,12 @@ class Ui_attendance(object):
         self.formLayout_3 = QtGui.QFormLayout()
         self.formLayout_3.setFieldGrowthPolicy(QtGui.QFormLayout.AllNonFixedFieldsGrow)
         self.formLayout_3.setObjectName(_fromUtf8("formLayout_3"))
-        self.label_11 = QtGui.QLabel(self.groupBox_3)
-        self.label_11.setObjectName(_fromUtf8("label_11"))
-        self.formLayout_3.setWidget(0, QtGui.QFormLayout.LabelRole, self.label_11)
         self.scan_status = QtGui.QLabel(self.groupBox_3)
         self.scan_status.setObjectName(_fromUtf8("scan_status"))
         self.formLayout_3.setWidget(0, QtGui.QFormLayout.FieldRole, self.scan_status)
+        self.label_11 = QtGui.QLabel(self.groupBox_3)
+        self.label_11.setObjectName(_fromUtf8("label_11"))
+        self.formLayout_3.setWidget(0, QtGui.QFormLayout.LabelRole, self.label_11)
         self.verticalLayout_6.addLayout(self.formLayout_3)
         self.gridLayout_4 = QtGui.QGridLayout()
         self.gridLayout_4.setObjectName(_fromUtf8("gridLayout_4"))
@@ -203,8 +203,8 @@ class Ui_attendance(object):
         self.label_8.setText(_translate("attendance", "Teacher", None))
         self.label_9.setText(_translate("attendance", "Date", None))
         self.groupBox_3.setTitle(_translate("attendance", "Info", None))
-        self.label_11.setText(_translate("attendance", "Status:", None))
         self.scan_status.setText(_translate("attendance", "Please click \"Done\" to finalise your attendance", None))
+        self.label_11.setText(_translate("attendance", "Status:", None))
         self.scan_done_btn.setText(_translate("attendance", "Done", None))
         self.groupBox_2.setTitle(_translate("attendance", "Student Details", None))
         self.label_4.setText(_translate("attendance", "Student ID", None))
@@ -215,13 +215,3 @@ class Ui_attendance(object):
         self.attendance_tab.setTabText(self.attendance_tab.indexOf(self.tab), _translate("attendance", "Attendance", None))
 
 import resource_rc
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    attendance = QtGui.QMainWindow()
-    ui = Ui_attendance()
-    ui.setupUi(attendance)
-    attendance.show()
-    sys.exit(app.exec_())
-
