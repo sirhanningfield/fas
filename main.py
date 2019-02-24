@@ -1,5 +1,6 @@
 import sys, os
 import time
+import serial
 import hashlib
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
@@ -7,6 +8,7 @@ import mysql.connector
 import ntpath
 import shutil
 import datetime
+
 
 
 from login import Ui_login
