@@ -75,7 +75,7 @@ class Main(QWidget, Ui_login, Ui_admin):
 
     def openAdminWindow(self):
     	# self.admin_window = Admin(self)
-    	self.Connect_Arduino()
+    	# self.Connect_Arduino()
     	self.window = QTabWidget()
     	self.admin_ui = Ui_admin()
     	self.admin_ui.setupUi(self.window)
