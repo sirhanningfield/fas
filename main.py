@@ -28,6 +28,24 @@ mydb = mysql.connector.connect(
 	)
 cursor = mydb.cursor(named_tuple=True)
 
+Comport = 'COM3'
+Baudrate = 9600
+
+
+class WorkThread(QThread):
+
+    def __init__(self,parent= None):
+        QThread.__init__(self,parent)
+        self.parent = parent
+        self.wert = ""
+
+    def run(self):
+
+        while True:
+            time.sleep(0.2)
+            self.wert = str(self.parent.Buffer())
+            self.emit(SIGNAL('update(QString)'),self.wert)
+        return
 
 
 class Main(QWidget, Ui_login, Ui_admin):
@@ -57,12 +75,14 @@ class Main(QWidget, Ui_login, Ui_admin):
 
     def openAdminWindow(self):
     	# self.admin_window = Admin(self)
+    	self.Connect_Arduino()
     	self.window = QTabWidget()
     	self.admin_ui = Ui_admin()
     	self.admin_ui.setupUi(self.window)
     	self.window.show()
     	self.admin_ui.add_class_btn.clicked.connect(lambda: self.addClass())
     	self.admin_ui.reg_std_btn.clicked.connect(lambda: self.addStudent())
+    	self.admin_ui.reg_std_add_finger_btn.clicked.connect(lambda: self.addFingerprint())
     	self.admin_ui.reg_std_upload_btn.clicked.connect(lambda: self.chooseFile())
     	self.admin_ui.reg_std_class_list.addItems(self.classes)
     	self.admin_ui.add_class_list.addItems(self.classes)
@@ -134,6 +154,7 @@ class Main(QWidget, Ui_login, Ui_admin):
 
     	self.admin_ui.res_std_id.addItems(students)
     	pass
+
     def copyToProject(self,fileName):
     	path, fileExtension = os.path.splitext(str(fileName))
     	timestamp = str(time.time())
@@ -198,7 +219,66 @@ class Main(QWidget, Ui_login, Ui_admin):
 	        self.admin_ui.reg_std_class_list.setItemSelected(item, False)
     	pass
 
-    def addStudent(self,):
+    def addFingerprint(self):
+    	# Arduino = serial.Serial(Comport,Baudrate,timeout=0)
+    	# time.sleep(2)
+     #    Arduino.write("A")
+     #    self.workThread = WorkThread(self)
+     #    self.connect( self.workThread,SIGNAL("update(QString)"), self.dummy )
+     #    self.workThread.start()
+     	self.ser.write("B")
+        print "its ended already"
+    	pass
+
+    def dummy(self,text):
+    	text = str(text)
+    	self.admin_ui.reg_std_status.setText(text)
+    	
+    		
+
+    def Buffer(self):
+        buffer = ''
+        while True:
+            buffer = buffer + str(self.ser.read(self.ser.inWaiting()).strip().decode())
+            time.sleep(0.05)
+            if '\n' in buffer:
+                lines = buffer.split('\n')
+                last_received = lines.pop(0)
+                buffer = '\n'.join(lines)
+                break
+            return buffer
+
+
+    def Connect_Arduino(self):
+
+        try:
+        	# print "Connecting to arduino"
+
+            self.ser = serial.Serial(Comport,Baudrate, timeout=0)
+            time.sleep(0.5)
+            print "Connecting to arduino"
+            self.workThread = WorkThread(self)
+            self.connect( self.workThread,SIGNAL("update(QString)"), self.dummy )
+            self.workThread.start()
+
+        except:
+            print ('No Arduino found')
+            sys.exit()
+
+    def Buffer(self):
+        buffer = ''
+        while True:
+            buffer = buffer + str(self.ser.read(self.ser.inWaiting()).strip().decode())
+            time.sleep(0.05)
+            if '\n' in buffer:
+                lines = buffer.split('\n')
+                last_received = lines.pop(0)
+                buffer = '\n'.join(lines)
+                break
+            return buffer
+
+
+    def addStudent(self):
     	print "Adding student ..."
     	studentId = str(self.admin_ui.reg_std_id.text())
     	name = str(self.admin_ui.reg_std_name.text())
@@ -209,7 +289,7 @@ class Main(QWidget, Ui_login, Ui_admin):
     	classes = self.selectedClasses(classes)
     	imagePath = self.stdRegImg
     	credentials = [studentId, name, dob, guardian, address, imagePath, classes]
-
+    	# fingerprintId = self.addFingerprint()
 
     	if self.validateCredentials(credentials,"Please enter all fields") == False :
     		return 
