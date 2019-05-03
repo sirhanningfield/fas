@@ -182,23 +182,13 @@
                 <widget class="QComboBox" name="scan_class_no"/>
                </item>
                <item row="1" column="0">
-                <widget class="QLabel" name="label_8">
-                 <property name="text">
-                  <string>Teacher</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLineEdit" name="scan_teacher"/>
-               </item>
-               <item row="2" column="0">
                 <widget class="QLabel" name="label_9">
                  <property name="text">
                   <string>Date</string>
                  </property>
                 </widget>
                </item>
-               <item row="2" column="1">
+               <item row="1" column="1">
                 <widget class="QDateEdit" name="dateEdit"/>
                </item>
               </layout>
@@ -209,53 +199,26 @@
           <item>
            <widget class="QGroupBox" name="groupBox_3">
             <property name="title">
-             <string>Info</string>
+             <string>Status</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
-              <layout class="QFormLayout" name="formLayout_3">
-               <property name="fieldGrowthPolicy">
-                <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-               </property>
-               <item row="0" column="1">
-                <widget class="QLabel" name="scan_status">
-                 <property name="text">
-                  <string>Please click &quot;Done&quot; to finalise your attendance</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_11">
-                 <property name="text">
-                  <string>Status:</string>
-                 </property>
-                </widget>
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <item>
+                <widget class="QTextEdit" name="std_attn_status"/>
                </item>
               </layout>
              </item>
              <item>
               <layout class="QGridLayout" name="gridLayout_4">
-               <item row="1" column="1">
+               <item row="0" column="1">
                 <widget class="QPushButton" name="scan_done_btn">
                  <property name="text">
                   <string>Done</string>
                  </property>
                 </widget>
                </item>
-               <item row="0" column="1">
-                <spacer name="verticalSpacer_4">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="0">
+               <item row="0" column="0">
                 <spacer name="horizontalSpacer_3">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -286,7 +249,7 @@
              <property name="fieldGrowthPolicy">
               <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
              </property>
-             <item row="1" column="0">
+             <item row="2" column="1">
               <widget class="QLabel" name="scan_std_pic">
                <property name="text">
                 <string/>
@@ -296,7 +259,7 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item row="3" column="1">
               <spacer name="verticalSpacer">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -309,63 +272,63 @@
                </property>
               </spacer>
              </item>
-             <item row="3" column="0">
+             <item row="4" column="0">
               <widget class="QLabel" name="label_4">
                <property name="text">
                 <string>Student ID</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="4" column="1">
               <widget class="QLineEdit" name="scan_std_id">
                <property name="enabled">
                 <bool>false</bool>
                </property>
               </widget>
              </item>
-             <item row="4" column="0">
+             <item row="5" column="0">
               <widget class="QLabel" name="label_5">
                <property name="text">
                 <string>Name</string>
                </property>
               </widget>
              </item>
-             <item row="4" column="1">
+             <item row="5" column="1">
               <widget class="QLineEdit" name="scan_std_name">
                <property name="enabled">
                 <bool>false</bool>
                </property>
               </widget>
              </item>
-             <item row="5" column="0">
+             <item row="6" column="0">
               <widget class="QLabel" name="label_6">
                <property name="text">
                 <string>DOB</string>
                </property>
               </widget>
              </item>
-             <item row="5" column="1">
+             <item row="6" column="1">
               <widget class="QLineEdit" name="scan_std_dob">
                <property name="enabled">
                 <bool>false</bool>
                </property>
               </widget>
              </item>
-             <item row="6" column="0">
+             <item row="7" column="0">
               <widget class="QLabel" name="label_7">
                <property name="text">
                 <string>Guardian</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="1">
+             <item row="7" column="1">
               <widget class="QLineEdit" name="scan_std_guardian">
                <property name="enabled">
                 <bool>false</bool>
                </property>
               </widget>
              </item>
-             <item row="7" column="1">
+             <item row="8" column="1">
               <spacer name="verticalSpacer_2">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -378,7 +341,7 @@
                </property>
               </spacer>
              </item>
-             <item row="8" column="1">
+             <item row="9" column="1">
               <widget class="QPushButton" name="scan_finger_btn">
                <property name="text">
                 <string>Scan Fingerprint</string>

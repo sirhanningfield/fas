@@ -6,11 +6,15 @@ Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 int id;
 void setup()  
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   while (!Serial);  // For Yun/Leo/Micro/Zero/...
+
+  Serial.println("Attempting to setup fingerprint reader...");
   
   // set the data rate for the sensor serial port
   finger.begin(57600);
+
+  
   
   if (finger.verifyPassword()) {
     Serial.println("Fingerprint reader is setup and ready...");
@@ -37,11 +41,19 @@ void loop()                     // run over and over again
   if (Serial.available()) {
      char input = Serial.read();
      if(input == 'A'){
+        bool registerPrint = true;
         finger.getTemplateCount();
         id = finger.templateCount+1;
-        delay(50);
-        while (!  getFingerprintEnroll() );
-        delay(50); 
+        while (registerPrint){
+          int k = getFingerprintEnroll();
+          
+          if(k != -1){
+            delay(200);
+            Serial.print("#E ");
+            Serial.println(k);
+            registerPrint = false;
+          }
+        }
      }
      if(input == 'B'){
       bool findPrint = true;
@@ -50,9 +62,8 @@ void loop()                     // run over and over again
           int k = getFingerprintIDez();
           delay(50);
           if(k != -1){
-            Serial.print("#");
-            Serial.print(k);
-            Serial.print("#");
+            Serial.print("#F ");
+            Serial.println(k);
             findPrint = false;
           }
         }
@@ -181,10 +192,12 @@ uint8_t getFingerprintEnroll() {
     return p;
   }   
   
-  Serial.print("ID "); Serial.println(id);
+//  Serial.print("ID "); Serial.println(id);
   p = finger.storeModel(id);
   if (p == FINGERPRINT_OK) {
     Serial.println("Stored!");
+    delay(50);
+    return id;
   } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
     Serial.println("Communication error");
     return p;
@@ -197,7 +210,7 @@ uint8_t getFingerprintEnroll() {
   } else {
     Serial.println("Unknown error");
     return p;
-  }   
+  }  
 }
 
 
@@ -215,7 +228,7 @@ int getFingerprintIDez() {
     return -1;
   }
   
-  if(finger.confidence >= 100){
+  if(finger.confidence >= 50){
      return finger.fingerID; 
   }else{
     Serial.println("Please place the finger properly...");

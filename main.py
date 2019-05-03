@@ -29,7 +29,7 @@ mydb = mysql.connector.connect(
 cursor = mydb.cursor(named_tuple=True)
 
 Comport = 'COM3'
-Baudrate = 9600
+Baudrate = 115200
 
 
 class WorkThread(QThread):
@@ -60,6 +60,7 @@ class Main(QWidget, Ui_login, Ui_admin):
         self.login_ui.login_btn.clicked.connect(lambda: self.login())
         self.login_ui.password.returnPressed.connect(lambda: self.login())
         self.classes = self.getAllClasses()
+        self.fid = ""
 
     def getAllClasses(self):
     	print "Get all classes ..."
@@ -75,7 +76,7 @@ class Main(QWidget, Ui_login, Ui_admin):
 
     def openAdminWindow(self):
     	# self.admin_window = Admin(self)
-    	# self.Connect_Arduino()
+    	self.Connect_Arduino()
     	self.window = QTabWidget()
     	self.admin_ui = Ui_admin()
     	self.admin_ui.setupUi(self.window)
@@ -87,11 +88,16 @@ class Main(QWidget, Ui_login, Ui_admin):
     	self.admin_ui.reg_std_class_list.addItems(self.classes)
     	self.admin_ui.add_class_list.addItems(self.classes)
     	self.admin_ui.res_class.addItems(self.classes)
+    	self.admin_ui.add_class_list.setDisabled(True)
     	self.getClassStudents()
     	self.admin_ui.res_class.currentIndexChanged.connect(lambda: self.getClassStudents())
     	self.admin_ui.res_display_btn.clicked.connect(lambda: self.getAttendence())
     	self.resetTableView()
     	self.admin_ui.res_reset_btn.clicked.connect(lambda: self.resetTableView())
+    	self.admin_ui.std_reg_text.setDisabled(True)
+    	self.admin_ui.reg_std_dob.setDateTime(QDateTime.currentDateTime())
+    	self.admin_ui.res_date_from.setDateTime(QDateTime.currentDateTime())
+    	self.admin_ui.res_date_to.setDateTime(QDateTime.currentDateTime())
     	pass
 
     def resetTableView(self):
@@ -103,8 +109,7 @@ class Main(QWidget, Ui_login, Ui_admin):
     	self.admin_ui.res_table_view.setItem(0,2, QTableWidgetItem("Class Code"))
     	self.admin_ui.res_table_view.setItem(0,3, QTableWidgetItem("Date"))
     	self.admin_ui.res_display_btn.setEnabled(True);
-    	self.admin_ui.result_count.setText("0");
-
+    	self.admin_ui.result_count.setText("0")
     	pass
 
     def getAttendence(self):
@@ -193,11 +198,11 @@ class Main(QWidget, Ui_login, Ui_admin):
             classes.append(str(selectedClasses[i].text()))
     	return classes
 
-    def addNewStudent(self,studentId, name, dob, guardian,address, imagePath):
+    def addNewStudent(self,studentId, name, dob, guardian,address, imagePath, fingerprintId):
 
     	# add student to database
     	sql = "INSERT INTO students (student_id, name, dob, guardian, address, image_path, fingerprint_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    	val = (studentId, name, dob,guardian,address,imagePath,'') # change '' to a value later
+    	val = (studentId, name, dob,guardian,address,imagePath,fingerprintId) # change '' to a value later
     	cursor.execute(sql, val)
     	mydb.commit()
     	return True
@@ -220,42 +225,51 @@ class Main(QWidget, Ui_login, Ui_admin):
     	pass
 
     def addFingerprint(self):
-    	# Arduino = serial.Serial(Comport,Baudrate,timeout=0)
-    	# time.sleep(2)
-     #    Arduino.write("A")
-     #    self.workThread = WorkThread(self)
-     #    self.connect( self.workThread,SIGNAL("update(QString)"), self.dummy )
-     #    self.workThread.start()
-     	self.ser.write("B")
-        print "its ended already"
+    	self.ser.write("A")
     	pass
 
     def dummy(self,text):
     	text = str(text)
-    	self.admin_ui.reg_std_status.setText(text)
+    	if text:
+    		text = text + "\n"
+    		if text.startswith("#"):
+    			self.parseText(text)
+	    	else:
+    			self.admin_ui.std_reg_text.insertPlainText(text)
     	
     		
+    def parseText(self, text):
+    	print "Parsing and understanding text..."
+
+    	# If string starts with F its finding an ID , if it starts with E its enrolling an ID
+
+    	fid = text.split(" ")[1] 
+    	if text.startswith("#F"):
+    		self.findStudentById(fid)
+    		pass
+    	if text.startswith("#E"):
+    		self.fid = fid
+    		pass
+
+    	pass
+
+    def findStudentById(self, fid):
+    	student = self.checkIfExists("students","fingerprint_id", fid)
+    	print student
+    	pass
+
 
     def Buffer(self):
         buffer = ''
         while True:
             buffer = buffer + str(self.ser.read(self.ser.inWaiting()).strip().decode())
-            time.sleep(0.05)
-            if '\n' in buffer:
-                lines = buffer.split('\n')
-                last_received = lines.pop(0)
-                buffer = '\n'.join(lines)
-                break
             return buffer
 
 
     def Connect_Arduino(self):
 
         try:
-        	# print "Connecting to arduino"
-
             self.ser = serial.Serial(Comport,Baudrate, timeout=0)
-            time.sleep(0.5)
             print "Connecting to arduino"
             self.workThread = WorkThread(self)
             self.connect( self.workThread,SIGNAL("update(QString)"), self.dummy )
@@ -265,17 +279,7 @@ class Main(QWidget, Ui_login, Ui_admin):
             print ('No Arduino found')
             sys.exit()
 
-    def Buffer(self):
-        buffer = ''
-        while True:
-            buffer = buffer + str(self.ser.read(self.ser.inWaiting()).strip().decode())
-            time.sleep(0.05)
-            if '\n' in buffer:
-                lines = buffer.split('\n')
-                last_received = lines.pop(0)
-                buffer = '\n'.join(lines)
-                break
-            return buffer
+    
 
 
     def addStudent(self):
@@ -288,9 +292,10 @@ class Main(QWidget, Ui_login, Ui_admin):
     	classes = self.admin_ui.reg_std_class_list.selectedItems()
     	classes = self.selectedClasses(classes)
     	imagePath = self.stdRegImg
-    	credentials = [studentId, name, dob, guardian, address, imagePath, classes]
-    	# fingerprintId = self.addFingerprint()
+    	fingerprintId = self.fid
 
+    	credentials = [studentId, name, dob, guardian, address, imagePath, classes, fingerprintId]
+    	
     	if self.validateCredentials(credentials,"Please enter all fields") == False :
     		return 
     		pass
@@ -303,8 +308,15 @@ class Main(QWidget, Ui_login, Ui_admin):
     		return
     	 	pass
 
+    	result = self.checkIfExists("students","fingerprint_id", fingerprintId)
+
+    	if result:
+    		self.showErrorMessage("fingerprint ID already exists")
+    		return
+    	 	pass
+
     	# If student doesnt already exist, then create a new one and link to classes
-    	addStudent = self.addNewStudent(studentId, name, dob, guardian,address, imagePath)
+    	addStudent = self.addNewStudent(studentId, name, dob, guardian,address, imagePath, fingerprintId)
     	addStudentClass = self.addNewStudentClass(studentId, classes)
     	
     	if addStudent and addStudentClass:
@@ -317,8 +329,10 @@ class Main(QWidget, Ui_login, Ui_admin):
     		self.admin_ui.reg_std_guardian.setText("")
     		self.admin_ui.reg_std_address.setText("")
     		self.stdRegImg = ""
+    		self.fid = ""
     		self.admin_ui.register_student_pic.setPixmap(QPixmap(_fromUtf8(":/holder/img/holder_1.PNG")))
     		self.clearList()
+    		self.admin_ui.std_reg_text.clear()
     		# self.admin_ui.reg_std_dob.clear()
 
     	pass
