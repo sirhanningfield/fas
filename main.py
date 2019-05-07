@@ -139,6 +139,7 @@ class Main(QWidget, Ui_login, Ui_admin):
             row += 1
 
         workbook.close()
+        self.showErrorMessage("Report exported to reports folder as : "+fileName)
         pass
 
     def resetTableView(self):
