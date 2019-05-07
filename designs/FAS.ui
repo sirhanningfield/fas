@@ -524,6 +524,9 @@
                 </property>
                </widget>
               </item>
+              <item row="3" column="1">
+               <widget class="QDateEdit" name="res_date_from"/>
+              </item>
               <item row="4" column="0">
                <widget class="QLabel" name="label_20">
                 <property name="text">
@@ -536,6 +539,13 @@
               </item>
               <item row="5" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <widget class="QPushButton" name="export_button">
+                  <property name="text">
+                   <string>Export Report</string>
+                  </property>
+                 </widget>
+                </item>
                 <item>
                  <spacer name="horizontalSpacer_5">
                   <property name="orientation">
@@ -565,9 +575,6 @@
                 </item>
                </layout>
               </item>
-              <item row="3" column="1">
-               <widget class="QDateEdit" name="res_date_from"/>
-              </item>
              </layout>
             </widget>
            </item>
@@ -579,6 +586,7 @@
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
+             <zorder>groupBox_4</zorder>
             </widget>
            </item>
           </layout>
@@ -662,6 +670,7 @@
  </widget>
  <resources>
   <include location="../resource.qrc"/>
+  <include location="../../../.designer/resource.qrc"/>
  </resources>
  <connections/>
 </ui>

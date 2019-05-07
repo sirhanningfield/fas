@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '.\FAS.ui'
 #
-# Created: Tue May 07 22:10:45 2019
+# Created: Tue May 07 22:07:28 2019
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -265,9 +265,6 @@ class Ui_admin(object):
         self.formLayout_12.setWidget(4, QtGui.QFormLayout.FieldRole, self.res_date_to)
         self.horizontalLayout_4 = QtGui.QHBoxLayout()
         self.horizontalLayout_4.setObjectName(_fromUtf8("horizontalLayout_4"))
-        self.export_button = QtGui.QPushButton(self.groupBox_4)
-        self.export_button.setObjectName(_fromUtf8("export_button"))
-        self.horizontalLayout_4.addWidget(self.export_button)
         spacerItem11 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem11)
         self.res_reset_btn = QtGui.QPushButton(self.groupBox_4)
@@ -277,6 +274,9 @@ class Ui_admin(object):
         self.res_display_btn.setObjectName(_fromUtf8("res_display_btn"))
         self.horizontalLayout_4.addWidget(self.res_display_btn)
         self.formLayout_12.setLayout(5, QtGui.QFormLayout.FieldRole, self.horizontalLayout_4)
+        self.export_button = QtGui.QPushButton(self.groupBox_4)
+        self.export_button.setObjectName(_fromUtf8("export_button"))
+        self.formLayout_12.setWidget(6, QtGui.QFormLayout.FieldRole, self.export_button)
         self.verticalLayout_24.addWidget(self.groupBox_4)
         self.frame_2 = QtGui.QFrame(self.records_tab)
         self.frame_2.setFrameShape(QtGui.QFrame.StyledPanel)
@@ -319,7 +319,7 @@ class Ui_admin(object):
         self.gridLayout.addLayout(self.verticalLayout_5, 0, 0, 1, 1)
 
         self.retranslateUi(admin)
-        self.tab_4.setCurrentIndex(0)
+        self.tab_4.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(admin)
 
     def retranslateUi(self, admin):
@@ -351,9 +351,9 @@ class Ui_admin(object):
         self.label_12.setText(_translate("admin", "Student ID", None))
         self.label_19.setText(_translate("admin", "From", None))
         self.label_20.setText(_translate("admin", "To", None))
-        self.export_button.setText(_translate("admin", "Export Report", None))
         self.res_reset_btn.setText(_translate("admin", "Reset", None))
         self.res_display_btn.setText(_translate("admin", "Display", None))
+        self.export_button.setText(_translate("admin", "Export Report", None))
         self.groupBox_3.setTitle(_translate("admin", "Attendance Results", None))
         self.label_13.setText(_translate("admin", "Total Attendence :", None))
         self.result_count.setText(_translate("admin", "0", None))

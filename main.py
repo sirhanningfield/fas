@@ -8,6 +8,7 @@ import mysql.connector
 import ntpath
 import shutil
 import datetime
+import xlsxwriter
 
 
 
@@ -61,6 +62,7 @@ class Main(QWidget, Ui_login, Ui_admin):
         self.login_ui.password.returnPressed.connect(lambda: self.login())
         self.classes = self.getAllClasses()
         self.fid = ""
+        self.attendanceResult = []
 
     def getAllClasses(self):
     	print "Get all classes ..."
@@ -93,12 +95,51 @@ class Main(QWidget, Ui_login, Ui_admin):
     	self.admin_ui.res_class.currentIndexChanged.connect(lambda: self.getClassStudents())
     	self.admin_ui.res_display_btn.clicked.connect(lambda: self.getAttendence())
     	self.resetTableView()
-    	self.admin_ui.res_reset_btn.clicked.connect(lambda: self.resetTableView())
+        self.admin_ui.res_reset_btn.clicked.connect(lambda: self.resetTableView())
+    	self.admin_ui.export_button.clicked.connect(lambda: self.generateExcel())
     	self.admin_ui.std_reg_text.setDisabled(True)
     	self.admin_ui.reg_std_dob.setDateTime(QDateTime.currentDateTime())
     	self.admin_ui.res_date_from.setDateTime(QDateTime.currentDateTime())
     	self.admin_ui.res_date_to.setDateTime(QDateTime.currentDateTime())
     	pass
+
+
+    def generateExcel(self):
+
+        # today = datetime.date.today()
+        now = datetime.datetime.now()
+        dt_string = now.strftime("%d%m%Y%H%M%S")
+        
+        print "Generating Excel"
+        if len(self.attendanceResult) == 0:
+            self.showErrorMessage("No result to export!")
+            return
+        fileName = 'reports/'+dt_string+"_report.xlsx"
+
+        workbook = xlsxwriter.Workbook(fileName)
+        worksheet = workbook.add_worksheet()
+
+        print fileName
+
+        results = self.attendanceResult
+        row = 0
+        col = 0
+
+        worksheet.write(row, col, 'Student Name')
+        worksheet.write(row, col + 1, 'Class Code')
+        worksheet.write(row, col + 2, 'Date')
+
+        col = 0
+        row = 1
+        for name, class_code, date in (results):
+            print [name, class_code, date]
+            worksheet.write(row, col, name)
+            worksheet.write(row, col + 1, class_code)
+            worksheet.write(row, col + 2, date)
+            row += 1
+
+        workbook.close()
+        pass
 
     def resetTableView(self):
 
@@ -110,6 +151,7 @@ class Main(QWidget, Ui_login, Ui_admin):
     	self.admin_ui.res_table_view.setItem(0,3, QTableWidgetItem("Date"))
     	self.admin_ui.res_display_btn.setEnabled(True);
     	self.admin_ui.result_count.setText("0")
+        self.attendanceResult = []
     	pass
 
     def getAttendence(self):
@@ -130,7 +172,18 @@ class Main(QWidget, Ui_login, Ui_admin):
 
     	cursor.execute(query)
     	result = cursor.fetchall()
-    	print result
+    	
+
+        resultArray = []
+        for row in result:
+            rowdata = [str(row.name), str(row.class_code), str(row.date)]
+            resultArray.append(rowdata)
+        
+
+        print resultArray
+
+        self.attendanceResult = resultArray
+
     	# fill in the table
     	for row_number, row_data in enumerate(result):
     		row_number += 1

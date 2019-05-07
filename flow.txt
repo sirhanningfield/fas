@@ -1,0 +1,23 @@
+1. Languages  - Python and arduino
+2. Libraries 
+	- PyQt4 for GUI
+	- PySerial for serial communication between arduino and GUI
+	- Mysql connector for communication with database
+	- Adafruit fingerprint library
+
+3. Process :
+		
+	- When the program is run, the login screen is the first thing that pops up
+	- If the login is succesful , the GUI looks for an arduino to connect to.
+	- If GUI does not find an aduino it shows error message in Sublime.
+	- Arduino connects at 'COM3' (if arduino does not connect, check what COM is connected to arduino from the "Device Manager" in windows and change the code where it says Comport)
+	- If arduino is found it goes to the main admin screen
+	- Can add classes, students and can see student attendance from the admin screen
+	- When trying to register a fingerprint, the GUI sends a string letter "A" to the arduino code. when arduino reads a letter "A" it initiates the registering of fingerprint through the adafruit library. Once the fingerprint is registered, the arduino resonds with an ID no of the print.
+
+	- The GUI then stores the ID of the print along with all the rest of the student detail in the mysql database.
+
+
+	- When trying to do the attendance, when student clicks on the "scan fingerprint" button, the GUI sends a string letter "B" to the arduino. when arduino receives a letter "B" it starts the fingerprint reading flow in the sensor and waits for a valid finger. Once a valid finger is detected, the sensor returns the ID of the fingerprint to the arduino and the arduino sends that ID back to the GUI. the GUI then picks up the ID and searches the database of all the info of the student with that ID. once all info is received , it is shown on the screen. the student can then add the class and date of attendance and click "done". The attendence then gets registered for that student , on that date and for that class.
+
+
