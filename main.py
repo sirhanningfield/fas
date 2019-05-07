@@ -78,7 +78,7 @@ class Main(QWidget, Ui_login, Ui_admin):
 
     def openAdminWindow(self):
     	# self.admin_window = Admin(self)
-    	self.Connect_Arduino()
+    	# self.Connect_Arduino()
     	self.window = QTabWidget()
     	self.admin_ui = Ui_admin()
     	self.admin_ui.setupUi(self.window)
@@ -139,6 +139,7 @@ class Main(QWidget, Ui_login, Ui_admin):
             row += 1
 
         workbook.close()
+        self.resetTableView()
         self.showErrorMessage("Report exported to reports folder as : "+fileName)
         pass
 
